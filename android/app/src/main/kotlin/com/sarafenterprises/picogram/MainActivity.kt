@@ -1,0 +1,6 @@
+package com.sarafenterprises.picogram
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
