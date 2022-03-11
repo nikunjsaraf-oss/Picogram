@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:picogram/resources/auth_methods.dart';
 import 'package:picogram/utils/colors.dart';
+import 'package:picogram/utils/utils.dart';
 import 'package:picogram/widgets/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -69,23 +72,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Login Button
               InkWell(
-                onTap: () {},
-                child: Container(
-                  child: const Text('Log in'),
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                  ),
-                  decoration: const ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4),
+                onTap: logInUser,
+                child: _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: primaryColor,
+                        ),
+                      )
+                    : Container(
+                        child: const Text('Log in'),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                        ),
+                        decoration: const ShapeDecoration(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(4),
+                            ),
+                          ),
+                          color: blueColor,
+                        ),
                       ),
-                    ),
-                    color: blueColor,
-                  ),
-                ),
               ),
               const SizedBox(
                 height: 12,
@@ -112,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         "Sign up",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          color: blueColor,
                         ),
                       ),
                       padding: const EdgeInsets.symmetric(
@@ -126,5 +136,20 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void logInUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethod().logInUser(
+        email: _emailController.text, password: _passwordController.text);
+    if (res == 'success') {
+    } else {
+      showSnackBar(res, context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

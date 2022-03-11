@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:picogram/responsive/mobile_screen_layout.dart';
 import 'package:picogram/responsive/responsive_layout.dart';
 import 'package:picogram/responsive/web_screen_layout.dart';
+import 'package:picogram/screens/login_screen.dart';
 import 'package:picogram/screens/signup_screen.dart';
 import 'package:picogram/utils/colors.dart';
 
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
       //   mobileScreenLayout: MobileScreenLayout(),
       //   webScreenLayout: WebScreenLayout(),
       // ),
-      home: const SignupScreen(),
+      home: const LoginScreen(),
     );
   }
 }

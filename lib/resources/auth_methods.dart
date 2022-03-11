@@ -28,7 +28,6 @@ class AuthMethod {
           password: password,
         );
 
-
         String photoURL = await StorageMethods()
             .upoadImageToStorage('profilePics', file, false);
         // Add user to database
@@ -43,14 +42,39 @@ class AuthMethod {
         });
         res = "success";
       }
-    } on FirebaseAuthException catch(err){
-      if(err.code == 'invalid-email'){
-        res = "Not a valid email";
-      } else if(err.code == 'weak-password'){
+    } on FirebaseAuthException catch (err) {
+      if (err.code == 'invalid-email') {
+        res = "Incorrect Email";
+      } else if (err.code == 'weak-password') {
         res = 'Password is too weak! It should be greater than 6 Characters';
       }
+    } catch (err) {
+      res = err.toString();
     }
-    catch (err) {
+    return res;
+  }
+
+  Future<String> logInUser({
+    required String email,
+    required String password,
+  }) async {
+    String res = "Some error occured";
+
+    try {
+      if (email.isNotEmpty && password.isNotEmpty) {
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+        res = 'success';
+      } else {
+        res = "Enter all the fields!";
+      }
+    } on FirebaseAuthException catch(err){
+      if(err.code == 'user-not-found'){
+        res = 'Incorrect Email';
+      } else if(err.code == 'wrong-password'){
+        res = 'Wrong Password';
+      }
+    }catch (err) {
       res = err.toString();
     }
     return res;
