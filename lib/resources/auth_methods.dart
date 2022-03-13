@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:picogram/models/user.dart' as model;
 import 'package:picogram/resources/storage_methods.dart';
 
 class AuthMethod {
@@ -31,15 +32,20 @@ class AuthMethod {
         String photoURL = await StorageMethods()
             .upoadImageToStorage('profilePics', file, false);
         // Add user to database
-        await _firestore.collection('user').doc(credential.user!.uid).set({
-          'username': username,
-          'uid': credential.user!.uid,
-          'email': email,
-          'bio': bio,
-          'followers': [],
-          'following': [],
-          'photoURl': photoURL,
-        });
+
+        model.User user = model.User(
+          userName: username,
+          uid: credential.user!.uid,
+          email: email,
+          bio: bio,
+          photoURL: photoURL,
+          followers: [],
+          following: [],
+        );
+        await _firestore
+            .collection('user')
+            .doc(credential.user!.uid)
+            .set(user.toJson());
         res = "success";
       }
     } on FirebaseAuthException catch (err) {
@@ -68,13 +74,13 @@ class AuthMethod {
       } else {
         res = "Enter all the fields!";
       }
-    } on FirebaseAuthException catch(err){
-      if(err.code == 'user-not-found'){
+    } on FirebaseAuthException catch (err) {
+      if (err.code == 'user-not-found') {
         res = 'Incorrect Email';
-      } else if(err.code == 'wrong-password'){
+      } else if (err.code == 'wrong-password') {
         res = 'Wrong Password';
       }
-    }catch (err) {
+    } catch (err) {
       res = err.toString();
     }
     return res;
