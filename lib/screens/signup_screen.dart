@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:picogram/resources/auth_methods.dart';
 import 'package:picogram/screens/login_screen.dart';
 import 'package:picogram/utils/utils.dart';
+import 'package:picogram/widgets/app_logo.dart';
 
 import '../responsive/mobile_screen_layout.dart';
 import '../responsive/responsive_layout.dart';
@@ -61,10 +61,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 flex: 2,
               ),
               // App Logo
-              SvgPicture.asset(
-                'assets/Picogram_SVG_logo.svg',
-                color: primaryColor,
-                height: 64,
+              const AppLogo(
+                fontSize: 50,
               ),
               const SizedBox(
                 height: 32,
@@ -80,8 +78,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       : const CircleAvatar(
                           radius: 64,
                           backgroundImage:
-                              NetworkImage("https://i.pinimg.com/564x/a8/d4/a0/"
-                                  "a8d4a05ae164ed4519b3eef5acf8f10e.jpg"),
+                              NetworkImage("https://i.pinimg.com/550x/18/b9/ff/18b9ffb2a8a791d50213a9d595c4dd52.jpg"),
                         ),
                   Positioned(
                     bottom: -10,
