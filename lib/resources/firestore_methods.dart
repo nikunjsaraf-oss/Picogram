@@ -14,7 +14,7 @@ class FirestoreMethods {
     var res = 'Some error occurred';
     try {
       String postURL =
-          await StorageMethods().upoadImageToStorage('posts', file, true);
+      await StorageMethods().upoadImageToStorage('posts', file, true);
 
       String postID = const Uuid().v1();
       Post post = Post(
@@ -34,5 +34,25 @@ class FirestoreMethods {
       res = error.toString();
     }
     return res;
+  }
+
+  Future<void> likePost(String postId, String uid, List likes) async {
+    String res = "Message";
+    try {
+      if (likes.contains(uid)) {
+       await _firestore.collection('posts').doc(postId).update({
+        'likes':FieldValue.arrayRemove([uid]),
+        });
+      } else {
+        await _firestore.collection('posts').doc(postId).update({
+          'likes':FieldValue.arrayUnion([uid]),
+        });
+        res = "success";
+      }
+    } catch (error) {
+      res = error.toString();
+    } finally {
+      print(res);
+    }
   }
 }
