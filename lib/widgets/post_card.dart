@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:picogram/models/user.dart';
 import 'package:picogram/providers/user_provider.dart';
 import 'package:picogram/resources/firestore_methods.dart';
+import 'package:picogram/screens/comments_screen.dart';
 import 'package:picogram/utils/colors.dart';
 import 'package:picogram/widgets/like_animation.dart';
 import 'package:provider/provider.dart';
@@ -164,7 +165,8 @@ class _PostCardState extends State<PostCard> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => CommentsScreen())),
                 icon: const Icon(
                   EvaIcons.messageCircleOutline,
                 ),
