@@ -103,7 +103,14 @@ class _PostCardState extends State<PostCard> {
                           ]
                               .map(
                                 (e) => InkWell(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    var res = await FirestoreMethods()
+                                        .deletePost(widget.snap['postId']);
+                                    Navigator.of(context).pop();
+                                    if (res != 'success') {
+                                      showSnackBar(res, context);
+                                    }
+                                  },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 12, horizontal: 16),
@@ -144,7 +151,6 @@ class _PostCardState extends State<PostCard> {
                   width: double.infinity,
                   child: Image.network(
                     widget.snap['postURL'],
-                    fit: BoxFit.cover,
                   ),
                 ),
                 AnimatedOpacity(
