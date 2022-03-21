@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:picogram/models/user.dart';
+import 'package:picogram/providers/user_provider.dart';
 import 'package:picogram/utils/colors.dart';
 import 'package:picogram/widgets/comment_card.dart';
+import 'package:provider/provider.dart';
 
 class CommentsScreen extends StatefulWidget {
   const CommentsScreen({Key? key}) : super(key: key);
@@ -12,6 +15,7 @@ class CommentsScreen extends StatefulWidget {
 class _CommentsScreenState extends State<CommentsScreen> {
   @override
   Widget build(BuildContext context) {
+    final User user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
@@ -30,12 +34,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
           child: Row(
             children: [
               CircleAvatar(
-                backgroundImage: NetworkImage("https://images.unsplash.com/"
-                    "photo-1647547355257-b69154605ae8?"
-                    "ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8f"
-                    "GVufDB8fH"
-                    "x8&"
-                    "auto=format&fit=crop&w=387&q=80"),
+                backgroundImage: NetworkImage(user.photoURL),
                 radius: 18,
               ),
               Expanded(
@@ -46,7 +45,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: "Comment as username",
+                        hintText: "Comment as ${user.userName}",
                         border: InputBorder.none),
                   ),
                 ),
