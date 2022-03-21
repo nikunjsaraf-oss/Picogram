@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:picogram/models/user.dart';
 import 'package:picogram/providers/user_provider.dart';
@@ -35,8 +36,27 @@ class _CommentsScreenState extends State<CommentsScreen> {
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
         centerTitle: true,
+        title: const Text('Comments'),
       ),
-      body: CommentCard(),
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('posts')
+              .doc(widget.snap['postId'])
+              .collection('comments')
+              .orderBy('datePublished', descending: true)
+              .snapshots(),
+          builder: (context,
+              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) =>
+                    CommentCard(snap: snapshot.data!.docs[index].data()));
+          }),
       bottomNavigationBar: SafeArea(
         child: Container(
           height: kToolbarHeight,
@@ -75,6 +95,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     user.userName,
                     user.photoURL,
                   );
+                  _commentController.text = "";
                   if (res != "success") {
                     showSnackBar(res, context);
                   }

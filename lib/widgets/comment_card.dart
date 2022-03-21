@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({Key? key}) : super(key: key);
+  // ignore: prefer_typing_uninitialized_variables
+  final snap;
+
+  const CommentCard({Key? key, required this.snap}) : super(key: key);
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -18,12 +22,9 @@ class _CommentCardState extends State<CommentCard> {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage("https://images.unsplash.com/"
-                "photo-1647547355257-b69154605ae8?"
-                "ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8f"
-                "GVufDB8fH"
-                "x8&"
-                "auto=format&fit=crop&w=387&q=80"),
+            backgroundImage: NetworkImage(
+              widget.snap['profilePic'],
+            ),
             radius: 18,
           ),
           Expanded(
@@ -37,13 +38,13 @@ class _CommentCardState extends State<CommentCard> {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "Username",
+                          text: widget.snap['name'],
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         TextSpan(
-                          text: " Description",
+                          text: " ${widget.snap['text']}",
                         ),
                       ],
                     ),
@@ -51,8 +52,9 @@ class _CommentCardState extends State<CommentCard> {
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                      "19/03/22",
-                      style: TextStyle(
+                      DateFormat.yMMMd()
+                          .format(widget.snap['datePublished'].toDate()),
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),

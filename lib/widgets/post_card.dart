@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -25,6 +26,29 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
+  int commentLength = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getComments();
+  }
+
+  void getComments() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> snap = await FirebaseFirestore
+          .instance
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+      commentLength = snap.docs.length;
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    } finally {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -230,9 +254,11 @@ class _PostCardState extends State<PostCard> {
                               CommentsScreen(snap: widget.snap),
                         ),
                       ),
-                      child: const Text(
-                        'View all comments',
-                        style: TextStyle(
+                      child: Text(
+                        commentLength > 0
+                            ? 'View all $commentLength comments'
+                            : '0 comments',
+                        style: const TextStyle(
                           fontSize: 14,
                           color: secondaryColor,
                         ),
