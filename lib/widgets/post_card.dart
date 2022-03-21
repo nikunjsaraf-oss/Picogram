@@ -6,6 +6,7 @@ import 'package:picogram/providers/user_provider.dart';
 import 'package:picogram/resources/firestore_methods.dart';
 import 'package:picogram/screens/comments_screen.dart';
 import 'package:picogram/utils/colors.dart';
+import 'package:picogram/utils/utils.dart';
 import 'package:picogram/widgets/like_animation.dart';
 import 'package:provider/provider.dart';
 
@@ -98,14 +99,18 @@ class _PostCardState extends State<PostCard> {
           ),
           GestureDetector(
             onDoubleTap: () async {
-              await FirestoreMethods().likePost(
+              var res = await FirestoreMethods().likePost(
                 widget.snap['postId'],
                 user.uid,
                 widget.snap['likes'],
               );
-              setState(() {
-                isLikeAnimating = true;
-              });
+              if (res == "success") {
+                setState(() {
+                  isLikeAnimating = true;
+                });
+              } else {
+                showSnackBar(res, context);
+              }
             },
             child: Stack(
               alignment: Alignment.center,
@@ -147,11 +152,14 @@ class _PostCardState extends State<PostCard> {
                 smallLike: true,
                 child: IconButton(
                   onPressed: () async {
-                    await FirestoreMethods().likePost(
+                    var res = await FirestoreMethods().likePost(
                       widget.snap['postId'],
                       user.uid,
                       widget.snap['likes'],
                     );
+                    if (res != "success") {
+                      showSnackBar(res, context);
+                    }
                   },
                   icon: widget.snap['likes'].contains(user.uid)
                       ? const Icon(
@@ -166,7 +174,10 @@ class _PostCardState extends State<PostCard> {
               ),
               IconButton(
                 onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => CommentsScreen())),
+                  MaterialPageRoute(
+                    builder: (context) => CommentsScreen(snap: widget.snap),
+                  ),
+                ),
                 icon: const Icon(
                   EvaIcons.messageCircleOutline,
                 ),
@@ -212,11 +223,19 @@ class _PostCardState extends State<PostCard> {
                   onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: const Text(
-                      'View all comments',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: secondaryColor,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CommentsScreen(snap: widget.snap),
+                        ),
+                      ),
+                      child: const Text(
+                        'View all comments',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: secondaryColor,
+                        ),
                       ),
                     ),
                   ),

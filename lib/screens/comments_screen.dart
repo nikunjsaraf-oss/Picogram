@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:picogram/models/user.dart';
 import 'package:picogram/providers/user_provider.dart';
+import 'package:picogram/resources/firestore_methods.dart';
 import 'package:picogram/utils/colors.dart';
+import 'package:picogram/utils/utils.dart';
 import 'package:picogram/widgets/comment_card.dart';
 import 'package:provider/provider.dart';
 
 class CommentsScreen extends StatefulWidget {
-  const CommentsScreen({Key? key}) : super(key: key);
+  final snap;
+
+  const CommentsScreen({
+    Key? key,
+    required this.snap,
+  }) : super(key: key);
 
   @override
   State<CommentsScreen> createState() => _CommentsScreenState();
 }
 
 class _CommentsScreenState extends State<CommentsScreen> {
+  final TextEditingController _commentController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _commentController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
@@ -44,6 +59,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     right: 8,
                   ),
                   child: TextField(
+                    controller: _commentController,
                     decoration: InputDecoration(
                         hintText: "Comment as ${user.userName}",
                         border: InputBorder.none),
@@ -51,7 +67,18 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () async {
+                  var res = await FirestoreMethods().postComment(
+                    widget.snap['postId'],
+                    _commentController.text,
+                    user.uid,
+                    user.userName,
+                    user.photoURL,
+                  );
+                  if (res != "success") {
+                    showSnackBar(res, context);
+                  }
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
