@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:picogram/models/user.dart';
 import 'package:picogram/providers/user_provider.dart';
 import 'package:picogram/resources/firestore_methods.dart';
+import 'package:picogram/screens/comments_screen.dart';
 import 'package:picogram/utils/colors.dart';
+import 'package:picogram/utils/utils.dart';
 import 'package:picogram/widgets/like_animation.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +26,29 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
+  int commentLength = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getComments();
+  }
+
+  void getComments() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> snap = await FirebaseFirestore
+          .instance
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+      commentLength = snap.docs.length;
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    } finally {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,14 +123,18 @@ class _PostCardState extends State<PostCard> {
           ),
           GestureDetector(
             onDoubleTap: () async {
-              await FirestoreMethods().likePost(
+              var res = await FirestoreMethods().likePost(
                 widget.snap['postId'],
                 user.uid,
                 widget.snap['likes'],
               );
-              setState(() {
-                isLikeAnimating = true;
-              });
+              if (res == "success") {
+                setState(() {
+                  isLikeAnimating = true;
+                });
+              } else {
+                showSnackBar(res, context);
+              }
             },
             child: Stack(
               alignment: Alignment.center,
@@ -146,11 +176,14 @@ class _PostCardState extends State<PostCard> {
                 smallLike: true,
                 child: IconButton(
                   onPressed: () async {
-                    await FirestoreMethods().likePost(
+                    var res = await FirestoreMethods().likePost(
                       widget.snap['postId'],
                       user.uid,
                       widget.snap['likes'],
                     );
+                    if (res != "success") {
+                      showSnackBar(res, context);
+                    }
                   },
                   icon: widget.snap['likes'].contains(user.uid)
                       ? const Icon(
@@ -164,7 +197,11 @@ class _PostCardState extends State<PostCard> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CommentsScreen(snap: widget.snap),
+                  ),
+                ),
                 icon: const Icon(
                   EvaIcons.messageCircleOutline,
                 ),
@@ -210,11 +247,21 @@ class _PostCardState extends State<PostCard> {
                   onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: const Text(
-                      'View all comments',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: secondaryColor,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CommentsScreen(snap: widget.snap),
+                        ),
+                      ),
+                      child: Text(
+                        commentLength > 0
+                            ? 'View all $commentLength comments'
+                            : '0 comments',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: secondaryColor,
+                        ),
                       ),
                     ),
                   ),

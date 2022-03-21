@@ -14,7 +14,7 @@ class FirestoreMethods {
     var res = 'Some error occurred';
     try {
       String postURL =
-      await StorageMethods().upoadImageToStorage('posts', file, true);
+          await StorageMethods().upoadImageToStorage('posts', file, true);
 
       String postID = const Uuid().v1();
       Post post = Post(
@@ -36,23 +36,51 @@ class FirestoreMethods {
     return res;
   }
 
-  Future<void> likePost(String postId, String uid, List likes) async {
-    String res = "Message";
+  Future<String> likePost(String postId, String uid, List likes) async {
+    String res;
     try {
       if (likes.contains(uid)) {
-       await _firestore.collection('posts').doc(postId).update({
-        'likes':FieldValue.arrayRemove([uid]),
+        await _firestore.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayRemove([uid]),
         });
       } else {
         await _firestore.collection('posts').doc(postId).update({
-          'likes':FieldValue.arrayUnion([uid]),
+          'likes': FieldValue.arrayUnion([uid]),
+        });
+      }
+      res = "success";
+    } catch (error) {
+      res = error.toString();
+    }
+    return res;
+  }
+
+  Future<String> postComment(String postId, String text, String uid,
+      String name, String profilePic) async {
+    String res;
+    try {
+      if (text.isNotEmpty) {
+        String commentId = const Uuid().v1();
+        await _firestore
+            .collection('posts')
+            .doc(postId)
+            .collection('comments')
+            .doc(commentId)
+            .set({
+          'profilePic': profilePic,
+          'name': name,
+          'uid': uid,
+          'text': text,
+          'commentId': commentId,
+          'datePublished': DateTime.now()
         });
         res = "success";
+      } else {
+        res = "Empty comment not allowed";
       }
     } catch (error) {
       res = error.toString();
-    } finally {
-      print(res);
     }
+    return res;
   }
 }

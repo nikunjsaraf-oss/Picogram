@@ -8,6 +8,6 @@ const homeScreenItems = [
   FeedScreen(),
   Text('Search'),
   AddPostScreen(),
-  Text('Fav'),
+  // Text('Fav'),
   Text('Profile'),
 ];
