@@ -49,7 +49,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: primaryColor,
+                ),
               );
             }
             return ListView.builder(

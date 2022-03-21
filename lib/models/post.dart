@@ -22,15 +22,15 @@ class Post {
   });
 
   Map<String, dynamic> toJson() => {
-    'description': description,
-    'uid': uid,
-    'postId': postId,
-    'userName': userName,
-    'datePublished': datePublished,
-    'postURL': postURL,
-    'profImage': profImage,
-    'likes': likes,
-  };
+        'description': description,
+        'uid': uid,
+        'postId': postId,
+        'userName': userName,
+        'datePublished': datePublished,
+        'postURL': postURL,
+        'profImage': profImage,
+        'likes': likes,
+      };
 
   static Post fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;

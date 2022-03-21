@@ -32,9 +32,9 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   }
 
   void onPageChanged(int value) {
-   setState(() {
-     _page = value;
-   });
+    setState(() {
+      _page = value;
+    });
   }
 
   @override
@@ -94,6 +94,4 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
       ),
     );
   }
-
-
 }

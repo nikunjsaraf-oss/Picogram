@@ -23,14 +23,15 @@ class FeedScreen extends StatelessWidget {
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: primaryColor,
+              ),
             );
           }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) => PostCard(
-              snap: snapshot.data!.docs[index].data()
-            ),
+            itemBuilder: (context, index) =>
+                PostCard(snap: snapshot.data!.docs[index].data()),
           );
         },
       ),

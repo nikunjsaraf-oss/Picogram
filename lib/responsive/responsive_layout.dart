@@ -19,12 +19,12 @@ class ResponsiveLayout extends StatefulWidget {
 }
 
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
-
   @override
   void initState() {
     super.initState();
     addData();
   }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -37,7 +37,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     );
   }
 
-  void addData() async{
+  void addData() async {
     UserProvider _userProvider = Provider.of(context, listen: false);
     await _userProvider.refreshUser();
   }

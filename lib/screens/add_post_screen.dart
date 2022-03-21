@@ -101,7 +101,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     }
   }
 
-  void clearImage(){
+  void clearImage() {
     setState(() {
       _file = null;
     });

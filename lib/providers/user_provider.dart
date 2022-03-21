@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:picogram/models/user.dart';
 import 'package:picogram/resources/auth_methods.dart';
 
-class UserProvider with ChangeNotifier{
+class UserProvider with ChangeNotifier {
   User? _user;
 
   final AuthMethod _authMethod = AuthMethod();
